@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histoire de l'IA</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --paper: rgba(255, 252, 247, 0.82);
+      --ink: #161616;
+      --muted: #5e5a55;
+      --accent: #c95f3b;
+      --accent-2: #1f5eff;
+      --edge: rgba(22, 22, 22, 0.08);
+      --shadow: 0 24px 70px rgba(27, 22, 16, 0.16);
+      --radius: 28px;
+      --title-font: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+      --body-font: "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(201, 95, 59, 0.18), transparent 30%),
+        radial-gradient(circle at right 20%, rgba(31, 94, 255, 0.14), transparent 28%),
+        linear-gradient(180deg, #f9f5ee 0%, #ede5d8 100%);
+      color: var(--ink);
+      font-family: var(--body-font);
+      overflow: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      width: 34vw;
+      height: 34vw;
+      border-radius: 50%;
+      filter: blur(28px);
+      opacity: 0.26;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      top: -10vw;
+      right: -8vw;
+      background: rgba(201, 95, 59, 0.28);
+    }
+
+    body::after {
+      left: -10vw;
+      bottom: -12vw;
+      background: rgba(31, 94, 255, 0.22);
+    }
+
+    .deck {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(320px, 1.15fr) minmax(300px, 0.85fr);
+      gap: 2.2rem;
+      align-items: center;
+      padding: 3.6rem 4.25rem 8.6rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(28px) scale(0.982);
+      transition: opacity 340ms ease, transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .visual-panel,
+    .text-panel {
+      min-height: 0;
+    }
+
+    .visual-panel {
+      position: relative;
+      height: min(74vh, 860px);
+      border-radius: calc(var(--radius) + 8px);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: rgba(255, 255, 255, 0.52);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .visual-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .visual-panel.contain img {
+      object-fit: contain;
+      background: linear-gradient(180deg, rgba(249, 245, 238, 0.96), rgba(236, 229, 217, 0.98));
+      padding: 1.6rem;
+    }
+
+    .visual-panel.dark {
+      background: #111111;
+    }
+
+    .visual-panel.dark img {
+      background: #111111;
+    }
+
+    .visual-panel::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 34%;
+      background: linear-gradient(180deg, transparent, rgba(15, 15, 15, 0.1));
+      pointer-events: none;
+    }
+
+    .text-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1.35rem 1.3rem 1.45rem;
+      background: var(--paper);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 40px rgba(34, 25, 18, 0.08);
+      border: 1px solid var(--edge);
+      backdrop-filter: blur(18px);
+      max-height: min(74vh, 860px);
+      min-width: 0;
+    }
+
+    .hero .text-panel {
+      gap: 0.8rem;
+      padding: 1.15rem 1.15rem 1.2rem;
+    }
+
+    .eyebrow {
+      font-family: var(--title-font);
+      font-size: clamp(1rem, 1.3vw, 1.25rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin: 0;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      line-height: 0.92;
+      font-family: var(--title-font);
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+
+    h1 {
+      font-size: clamp(2.7rem, 5.4vw, 5.6rem);
+      max-width: 9ch;
+      text-wrap: balance;
+    }
+
+    h2 {
+      font-size: clamp(1.9rem, 3.5vw, 4rem);
+      max-width: 11ch;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: clamp(1rem, 1.25vw, 1.25rem);
+      line-height: 1.36;
+      color: var(--muted);
+      max-width: 32ch;
+      text-wrap: balance;
+    }
+
+    .bullets {
+      margin: 0;
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 0.62rem;
+      font-size: clamp(0.98rem, 1.02vw, 1.14rem);
+      line-height: 1.28;
+      min-width: 0;
+    }
+
+    .bullets li::marker {
+      color: var(--accent);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: fit-content;
+      padding: 0.55rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(201, 95, 59, 0.12);
+      color: #8b452c;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+
+    .credit {
+      margin-top: auto;
+      align-self: flex-end;
+      max-width: 100%;
+      font-size: 0.84rem;
+      line-height: 1.22;
+      color: var(--muted);
+      text-align: right;
+      letter-spacing: 0.03em;
+      font-weight: 700;
+    }
+
+    .credit strong {
+      color: #2347aa;
+    }
+
+    .hero {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 0.85rem;
+      height: 100%;
+      padding: 0.85rem;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 235, 219, 0.9));
+    }
+
+    .hero-grid img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 22px;
+      box-shadow: 0 12px 28px rgba(18, 18, 18, 0.12);
+    }
+
+    .hero-grid img:first-child {
+      grid-row: span 2;
+    }
+
+    .closing {
+      grid-template-columns: 0.92fr 1.08fr;
+    }
+
+    .closing .text-panel {
+      gap: 0.9rem;
+    }
+
+    .closing-steps {
+      display: grid;
+      gap: 0.85rem;
+      margin-top: 0.4rem;
+    }
+
+    .closing-step {
+      padding: 0.92rem 1rem;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid rgba(22, 22, 22, 0.06);
+      font-size: clamp(1rem, 1.12vw, 1.2rem);
+      line-height: 1.28;
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem 1.2rem;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .counter {
+      padding: 0.55rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(255, 252, 247, 0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(22, 22, 22, 0.08);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .voice-controls {
+      position: fixed;
+      top: 1.4rem;
+      right: 1.5rem;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .timeline {
+      position: fixed;
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: 4.35rem;
+      z-index: 3;
+      padding: 0.35rem 0.2rem 0;
+      border-radius: 26px;
+      background: transparent;
+      border: 0;
+      backdrop-filter: none;
+      box-shadow: none;
+      pointer-events: auto;
+    }
+
+    .timeline-track {
+      display: grid;
+      grid-template-columns: repeat(var(--timeline-count, 1), minmax(0, 1fr));
+      gap: 0.36rem;
+      align-items: center;
+    }
+
+    .timeline-item {
+      display: grid;
+      justify-items: center;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+      min-width: 0;
+    }
+
+    .timeline-dot {
+      width: 100%;
+      max-width: 32px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(22, 22, 22, 0.24);
+      transition: transform 220ms ease, background-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
+    }
+
+    .timeline-item.active .timeline-dot {
+      transform: scaleY(1.35);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 4px rgba(31, 94, 255, 0.1);
+    }
+
+    .timeline-item:hover .timeline-dot {
+      background: rgba(31, 94, 255, 0.58);
+    }
+
+    .timeline-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.56rem;
+      min-width: 0;
+      padding: 0 0.8rem;
+    }
+
+    .timeline-current-year {
+      font-family: var(--title-font);
+      font-size: 0.92rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      white-space: nowrap;
+    }
+
+    .timeline-current-title {
+      min-width: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tap-zone {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 50vw;
+      z-index: 2;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .tap-zone.left {
+      left: 0;
+    }
+
+    .tap-zone.right {
+      right: 0;
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow: auto;
+      }
+
+      .deck {
+        height: auto;
+      }
+
+      .slide,
+      .slide.active {
+        position: relative;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        grid-template-columns: 1fr;
+        min-height: 100vh;
+        padding: 1.35rem 1rem 10rem;
+      }
+
+      .visual-panel {
+        height: min(48vh, 480px);
+      }
+
+      .text-panel {
+        padding: 1.2rem;
+        max-height: none;
+      }
+
+      .footer,
+      .timeline {
+        position: fixed;
+      }
+
+      .timeline-track {
+        gap: 0.28rem;
+      }
+
+      .timeline-meta {
+        gap: 0.6rem;
+      }
+
+      .timeline-current-year {
+        font-size: 0.72rem;
+      }
+
+      .timeline-current-title {
+        font-size: 0.72rem;
+      }
+
+      .tap-zone {
+        display: none;
+      }
+    }
+
+    @media print {
+      html,
+      body {
+        overflow: visible;
+        background: #ffffff;
+      }
+
+      body::before,
+      body::after,
+      .footer,
+      .timeline,
+      .tap-zone,
+      .voice-controls {
+        display: none;
+      }
+
+      .slide,
+      .slide.active {
+        position: relative;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        min-height: 100vh;
+        page-break-after: always;
+      }
+    }
+
+    .voice-button,
+    .voice-status {
+      padding: 0.62rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(255, 252, 247, 0.86);
+      border: 1px solid rgba(22, 22, 22, 0.08);
+      backdrop-filter: blur(12px);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 24px rgba(34, 25, 18, 0.08);
+    }
+
+    .voice-button {
+      cursor: pointer;
+    }
+
+    .voice-button.active {
+      background: rgba(31, 94, 255, 0.12);
+      border-color: rgba(31, 94, 255, 0.22);
+      color: #2347aa;
+    }
+
+    .voice-status {
+      color: var(--muted);
+      min-width: 14rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <section class="slide hero active">
+      <div class="visual-panel">
+        <div class="hero-grid">
+          <img src="assets/images/image(2).png" alt="Portrait d'Alan Turing">
+          <img src="assets/images/image(1).png" alt="Photo du groupe de Dartmouth">
+          <img src="assets/images/image(13).png" alt="Match Deep Blue contre Kasparov">
+        </div>
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">Histoire de l'IA</p>
+        <h1>Des règles aux agents</h1>
+        <p class="subtitle">Une timeline visuelle, simple, avec une idée forte par étape.</p>
+        <span class="tag">Images + bullets</span>
+        <ul class="bullets">
+          <li>Au début, on programme des règles.</li>
+          <li>Puis on apprend à partir d'exemples.</li>
+          <li>Aujourd'hui, l'IA parle, voit et agit.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(26).png" alt="Illustration d'un humain et d'un robot en conversation">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">Avant l'histoire</p>
+        <h2>C'est quoi l'IA ?</h2>
+        <ul class="bullets">
+          <li>Faire faire à une machine des tâches qui demandent d'habitude perception, langage ou décision.</li>
+          <li>Reconnaître une image, comprendre une question, recommander, traduire ou planifier.</li>
+          <li>L'IA n'est pas une seule technique: c'est une famille d'approches.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(15).png" alt="Exemples de chiffres manuscrits">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">Avant l'histoire</p>
+        <h2>Règles ou apprentissage</h2>
+        <ul class="bullets">
+          <li>Un programme classique suit des règles écrites à l'avance.</li>
+          <li>Le machine learning apprend à partir d'exemples et ajuste son comportement.</li>
+          <li>C'est ce passage de la règle à l'exemple qui change l'histoire de l'IA.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(10).png" alt="Schéma simple d'un réseau neuronal">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">Avant l'histoire</p>
+        <h2>Un réseau neuronal</h2>
+        <ul class="bullets">
+          <li>Un réseau neuronal est un système de calcul inspiré très librement du cerveau.</li>
+          <li>Il transforme une entrée en sortie grâce à de nombreuses connexions ajustables.</li>
+          <li>Apprendre, c'est modifier ces connexions pour mieux répondre au problème.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(2).png" alt="Alan Turing">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1950</p>
+        <h2>Test de Turing</h2>
+        <ul class="bullets">
+          <li>Question fondatrice: comment reconnaître une machine intelligente ?</li>
+          <li>Le langage devient un terrain central pour juger l'IA.</li>
+          <li>On évalue le comportement, pas la conscience.</li>
+        </ul>
+        <div class="credit"><strong>Alan Turing</strong><br>Can Machines Think?</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel">
+        <img src="assets/images/image(1).png" alt="Participants de la conférence de Dartmouth">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1956</p>
+        <h2>Dartmouth</h2>
+        <ul class="bullets">
+          <li>Naissance officielle de l'intelligence artificielle.</li>
+          <li>Grande ambition: reproduire le raisonnement humain.</li>
+          <li>Le champ se structure comme discipline de recherche.</li>
+        </ul>
+        <div class="credit"><strong>John McCarthy</strong><br>The Birth of AI</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel">
+        <img src="assets/images/image(3).png" alt="Mark I Perceptron">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1957-1958</p>
+        <h2>Le perceptron</h2>
+        <ul class="bullets">
+          <li>La machine commence à apprendre à partir d'exemples.</li>
+          <li>Ancêtre direct des réseaux de neurones.</li>
+          <li>On passe de règles codées à des connexions ajustables.</li>
+        </ul>
+        <div class="credit"><strong>Frank Rosenblatt</strong><br>The Perceptron</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel">
+        <img src="assets/images/image(4).png" alt="Arthur Samuel devant un ordinateur IBM">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1959</p>
+        <h2>Machine learning</h2>
+        <ul class="bullets">
+          <li>Une machine peut progresser en jouant.</li>
+          <li>Le programme de dames apprend avec l'expérience.</li>
+          <li>Le terme machine learning s'impose peu à peu.</li>
+        </ul>
+        <div class="credit"><strong>Arthur Samuel</strong><br>Machine Learning Gets Its Name</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark">
+        <img src="assets/images/image(5).png" alt="Capture d'écran d'ELIZA">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1966</p>
+        <h2>ELIZA</h2>
+        <ul class="bullets">
+          <li>Un des premiers chatbots célèbres.</li>
+          <li>Le système reformule plus qu'il ne comprend.</li>
+          <li>Les humains projettent déjà intelligence et empathie.</li>
+        </ul>
+        <div class="credit"><strong>Joseph Weizenbaum</strong><br>The First Chatbot</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(6).png" alt="Couverture de livre sur MYCIN">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1972</p>
+        <h2>MYCIN</h2>
+        <ul class="bullets">
+          <li>L'IA aide au diagnostic médical avec des règles d'experts.</li>
+          <li>Preuve qu'un système peut être utile dans un domaine sérieux.</li>
+          <li>Mais les règles deviennent vite lourdes à maintenir.</li>
+        </ul>
+        <div class="credit"><strong>Edward Shortliffe</strong><br>AI Enters Medicine</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(7).png" alt="Portrait de James Lighthill">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1973-1980</p>
+        <h2>Premier AI winter</h2>
+        <ul class="bullets">
+          <li>Beaucoup de promesses, peu de résultats à grande échelle.</li>
+          <li>Le rapport Lighthill refroidit fortement l'enthousiasme.</li>
+          <li>Les financements chutent.</li>
+        </ul>
+        <div class="credit"><strong>James Lighthill</strong><br>The First AI Winter</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel">
+        <img src="assets/images/image(8).png" alt="John Hopfield devant un tableau">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1982</p>
+        <h2>Hopfield networks</h2>
+        <ul class="bullets">
+          <li>Un réseau peut servir de mémoire associative.</li>
+          <li>Il retrouve un motif correct à partir d'une version incomplète.</li>
+          <li>Les réseaux neuronaux retrouvent de la crédibilité scientifique.</li>
+        </ul>
+        <div class="credit"><strong>John Hopfield</strong><br>Neural Networks as Memory</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(10).png" alt="Schéma de backpropagation">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1986</p>
+        <h2>Backpropagation</h2>
+        <ul class="bullets">
+          <li>Les réseaux apprennent vraiment de leurs erreurs.</li>
+          <li>La méthode rend possibles des architectures multicouches.</li>
+          <li>C'est une base du deep learning moderne.</li>
+        </ul>
+        <div class="credit"><strong>Geoffrey Hinton</strong><br>Backpropagation</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(11).png" alt="Lisp machine">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1987-1993</p>
+        <h2>Deuxième AI winter</h2>
+        <ul class="bullets">
+          <li>Les systèmes experts se révèlent rigides et coûteux.</li>
+          <li>Le marché des Lisp machines s'effondre.</li>
+          <li>Nouvelle phase de désillusion.</li>
+        </ul>
+        <div class="credit"><strong>Edward Feigenbaum</strong><br>The Second AI Winter</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel">
+        <img src="assets/images/image(13).png" alt="Kasparov face à Deep Blue">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1997</p>
+        <h2>Deep Blue</h2>
+        <ul class="bullets">
+          <li>Une machine bat le champion du monde d'échecs en titre.</li>
+          <li>Victoire très spécialisée, pas une IA générale.</li>
+          <li>Impact énorme sur l'imaginaire collectif.</li>
+        </ul>
+        <div class="credit"><strong>Feng-hsiung Hsu</strong><br>Deep Blue</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(15).png" alt="Exemples de chiffres manuscrits">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">1998</p>
+        <h2>LeNet</h2>
+        <ul class="bullets">
+          <li>Les réseaux reconnaissent des chiffres manuscrits en pratique.</li>
+          <li>Grand succès concret en vision par ordinateur.</li>
+          <li>L'architecture du modèle compte autant que l'apprentissage.</li>
+        </ul>
+        <div class="credit"><strong>Yann LeCun</strong><br>LeNet</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(17).png" alt="Yann LeCun">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2006</p>
+        <h2>Retour du deep learning</h2>
+        <ul class="bullets">
+          <li>Les réseaux profonds redeviennent crédibles dans la recherche.</li>
+          <li>On retrouve une méthode d'entraînement convaincante.</li>
+          <li>Le terrain se prépare pour l'explosion de 2012.</li>
+        </ul>
+        <div class="credit"><strong>Geoffrey Hinton</strong><br>Deep Learning Returns</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(16).png" alt="Mosaïque d'images ImageNet">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2009</p>
+        <h2>ImageNet</h2>
+        <ul class="bullets">
+          <li>Une énorme base d'images annotées change la recherche.</li>
+          <li>Les données deviennent un moteur central du progrès.</li>
+          <li>Tout le monde peut enfin comparer ses modèles sur le même terrain.</li>
+        </ul>
+        <div class="credit"><strong>Fei-Fei Li</strong><br>ImageNet</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel">
+        <img src="assets/images/image(18).png" alt="Installation autour d'IBM Watson">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2011</p>
+        <h2>Watson gagne Jeopardy!</h2>
+        <ul class="bullets">
+          <li>La machine répond à des questions formulées en langage humain.</li>
+          <li>Le public voit l'IA performer au-delà du simple calcul.</li>
+          <li>Le langage naturel devient un spectacle grand public.</li>
+        </ul>
+        <div class="credit"><strong>David Ferrucci</strong><br>Watson Wins Jeopardy!</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(26).png" alt="Illustration d'assistant vocal">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2011</p>
+        <h2>Siri sur iPhone</h2>
+        <ul class="bullets">
+          <li>L'IA entre dans le quotidien de millions de personnes.</li>
+          <li>On commence à parler naturellement à son téléphone.</li>
+          <li>L'assistant vocal devient un objet familier.</li>
+        </ul>
+        <div class="credit"><strong>Dag Kittlaus</strong><br>Siri on iPhone</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(16).png" alt="Mosaïque d'images d'ImageNet">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2012</p>
+        <h2>AlexNet</h2>
+        <ul class="bullets">
+          <li>Le deep learning écrase la concurrence sur ImageNet.</li>
+          <li>Le point de bascule devient visible pour toute la communauté.</li>
+          <li>Les CNN, les GPU et les données changent l'échelle du possible.</li>
+        </ul>
+        <div class="credit"><strong>Alex Krizhevsky</strong><br>AlexNet</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(20).png" alt="Visages générés par GAN">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2014</p>
+        <h2>GANs</h2>
+        <ul class="bullets">
+          <li>L'IA ne reconnaît plus seulement: elle génère aussi.</li>
+          <li>Un réseau crée, un autre critique.</li>
+          <li>L'IA générative devient spectaculaire.</li>
+        </ul>
+        <div class="credit"><strong>Ian Goodfellow</strong><br>GANs</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel">
+        <img src="assets/images/image(21).png" alt="Lee Sedol face au plateau de go">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2016</p>
+        <h2>AlphaGo</h2>
+        <ul class="bullets">
+          <li>La machine bat Lee Sedol au go.</li>
+          <li>Le résultat paraît longtemps impossible puis soudain réalisable.</li>
+          <li>L'IA semble capable de stratégie et d'idées inattendues.</li>
+        </ul>
+        <div class="credit"><strong>Demis Hassabis</strong><br>AlphaGo</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(22).png" alt="Schéma d'un transformer">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2017</p>
+        <h2>Transformers</h2>
+        <ul class="bullets">
+          <li>Nouvelle architecture pour traiter le langage à grande échelle.</li>
+          <li>L'attention relie mieux les éléments d'une phrase.</li>
+          <li>Base technique des grands modèles modernes.</li>
+        </ul>
+        <div class="credit"><strong>Ashish Vaswani</strong><br>Transformers</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(23).png" alt="Structure 3D de protéine">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2020</p>
+        <h2>AlphaFold</h2>
+        <ul class="bullets">
+          <li>L'IA prédit la forme des protéines avec une précision remarquable.</li>
+          <li>Le progrès dépasse le gadget et touche la science elle-même.</li>
+          <li>L'IA devient un accélérateur de recherche.</li>
+        </ul>
+        <div class="credit"><strong>John Jumper</strong><br>AlphaFold</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(25).png" alt="Symbole de modèle de langage">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2020</p>
+        <h2>GPT-3</h2>
+        <ul class="bullets">
+          <li>Un seul modèle peut rédiger, résumer, traduire et coder.</li>
+          <li>Le prompt devient une interface générale.</li>
+          <li>Le potentiel des grands modèles de langage devient évident.</li>
+        </ul>
+        <div class="credit"><strong>OpenAI</strong><br>GPT-3</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(20).png" alt="Exemples de visages générés">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2021-2022</p>
+        <h2>Diffusion models</h2>
+        <ul class="bullets">
+          <li>La génération d'images devient bluffante et accessible.</li>
+          <li>On part du bruit pour reconstruire une image cohérente.</li>
+          <li>L'IA générative devient visible pour tout le monde.</li>
+        </ul>
+        <div class="credit"><strong>Robin Rombach</strong><br>Diffusion Models</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/image(24).png" alt="Humain et robot en interaction">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2022</p>
+        <h2>RLHF / InstructGPT</h2>
+        <ul class="bullets">
+          <li>Le modèle suit mieux les intentions humaines.</li>
+          <li>Les retours d'humains rendent les réponses plus utiles et plus claires.</li>
+          <li>C'est une étape clé vers l'expérience ChatGPT.</li>
+        </ul>
+        <div class="credit"><strong>Long Ouyang</strong><br>RLHF / InstructGPT</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(27).png" alt="Symbole moderne d'IA">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2024-2026</p>
+        <h2>IA multimodale</h2>
+        <ul class="bullets">
+          <li>Les modèles lisent, voient, entendent et combinent plusieurs médias.</li>
+          <li>L'IA devient plus naturelle à utiliser dans des contextes réels.</li>
+          <li>On passe du texte seul à l'assistance multimodale.</li>
+        </ul>
+        <div class="credit"><strong>OpenAI / Google DeepMind</strong><br>Multimodal AI</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(28).png" alt="Symbole d'IA avancée">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2024-2026</p>
+        <h2>Modèles de raisonnement</h2>
+        <ul class="bullets">
+          <li>Certains modèles prennent plus de temps pour résoudre des problèmes difficiles.</li>
+          <li>Ils sont meilleurs en logique, en maths et en planification.</li>
+          <li>L'IA ne donne plus seulement une réponse, elle construit davantage un raisonnement.</li>
+        </ul>
+        <div class="credit"><strong>OpenAI / DeepSeek</strong><br>Reasoning Models</div>
+      </div>
+    </section>
+
+    <section class="slide closing">
+      <div class="visual-panel dark contain">
+        <img src="assets/images/image(29).png" alt="Symbole d'agent IA">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2024-2026</p>
+        <h2>IA agentique</h2>
+        <div class="closing-steps">
+          <div class="closing-step">Elle peut utiliser des outils, des navigateurs ou des logiciels.</div>
+          <div class="closing-step">Elle enchaîne plusieurs actions pour accomplir une tâche.</div>
+          <div class="closing-step">On passe d'une IA qui répond à une IA qui agit.</div>
+        </div>
+        <div class="credit"><strong>Anthropic / OpenAI</strong><br>Agentic AI</div>
+      </div>
+    </section>
+  </main>
+
+  <button class="tap-zone left" id="prevZone" aria-label="Slide précédente"></button>
+  <button class="tap-zone right" id="nextZone" aria-label="Slide suivante"></button>
+
+  <div class="voice-controls">
+    <button class="voice-button" id="voiceToggle" type="button">Voice mode</button>
+    <div class="voice-status" id="voiceStatus">Voix française locale</div>
+  </div>
+
+  <audio id="narrationAudio" preload="auto"></audio>
+
+  <nav class="timeline" aria-label="Timeline de la présentation">
+    <div class="timeline-track" id="timelineTrack"></div>
+    <div class="timeline-meta">
+      <div class="timeline-current-year" id="timelineCurrentYear">Histoire de l'IA</div>
+      <div class="timeline-current-title" id="timelineCurrentTitle">Des règles aux agents</div>
+    </div>
+  </nav>
+
+  <div class="footer">
+    <div class="counter" id="counter">1 / 31</div>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.getElementById("counter");
+    const timelineTrack = document.getElementById("timelineTrack");
+    const timelineCurrentYear = document.getElementById("timelineCurrentYear");
+    const timelineCurrentTitle = document.getElementById("timelineCurrentTitle");
+    const deck = document.getElementById("deck");
+    const prevZone = document.getElementById("prevZone");
+    const nextZone = document.getElementById("nextZone");
+    const voiceToggle = document.getElementById("voiceToggle");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const narrationAudio = document.getElementById("narrationAudio");
+    let index = 0;
+    let voiceModeEnabled = false;
+    let autoplayTimer = null;
+
+    const timelineItems = slides.map((slide, slideIndex) => {
+      const year = slide.querySelector(".eyebrow")?.textContent?.trim() || `${slideIndex + 1}`;
+      const title = slide.querySelector("h1, h2")?.textContent?.trim() || `Slide ${slideIndex + 1}`;
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "timeline-item";
+      item.setAttribute("aria-label", `${year} - ${title}`);
+      item.innerHTML = `<span class="timeline-dot" aria-hidden="true"></span>`;
+      item.addEventListener("click", (event) => {
+        event.stopPropagation();
+        stopNarration();
+        updateSlide(slideIndex, { speak: voiceModeEnabled });
+      });
+      timelineTrack.appendChild(item);
+      return item;
+    });
+
+    timelineTrack.style.setProperty("--timeline-count", String(timelineItems.length));
+
+    function clearAutoplayTimer() {
+      if (autoplayTimer) {
+        clearTimeout(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    function stopNarration() {
+      clearAutoplayTimer();
+      narrationAudio.pause();
+      narrationAudio.currentTime = 0;
+    }
+
+    function setVoiceStatus(message) {
+      voiceStatus.textContent = message;
+    }
+
+    function scheduleNextSlide(delay = 900) {
+      clearAutoplayTimer();
+      autoplayTimer = window.setTimeout(() => {
+        if (!voiceModeEnabled) {
+          return;
+        }
+
+        if (index < slides.length - 1) {
+          updateSlide(index + 1, { speak: true });
+        } else {
+          voiceModeEnabled = false;
+          voiceToggle.classList.remove("active");
+          voiceToggle.textContent = "Voice mode";
+          setVoiceStatus("Présentation terminée");
+        }
+      }, delay);
+    }
+
+    function speakCurrentSlide() {
+      if (!voiceModeEnabled) {
+        return;
+      }
+
+      stopNarration();
+
+      const audioFile = `assets/audio/tts/slide-${String(index + 1).padStart(2, "0")}.wav`;
+      narrationAudio.src = audioFile;
+      narrationAudio.onended = () => {
+        if (voiceModeEnabled) {
+          scheduleNextSlide();
+        }
+      };
+      narrationAudio.onerror = () => {
+        setVoiceStatus("Audio local introuvable");
+      };
+
+      const playPromise = narrationAudio.play();
+      setVoiceStatus("Voix française Piper");
+
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          setVoiceStatus("Lecture audio bloquée");
+        });
+      }
+    }
+
+    function updateSlide(nextIndex, options = {}) {
+      const { speak = false } = options;
+      index = Math.max(0, Math.min(nextIndex, slides.length - 1));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === index);
+      });
+      timelineItems.forEach((item, i) => {
+        item.classList.toggle("active", i === index);
+      });
+
+      const activeSlide = slides[index];
+      const activeYear = activeSlide.querySelector(".eyebrow")?.textContent?.trim() || "";
+      const activeTitle = activeSlide.querySelector("h1, h2")?.textContent?.trim() || "";
+
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      timelineCurrentYear.textContent = activeYear;
+      timelineCurrentTitle.textContent = activeTitle;
+
+      if (speak) {
+        speakCurrentSlide();
+      }
+    }
+
+    function goNext() {
+      stopNarration();
+      updateSlide(index + 1, { speak: voiceModeEnabled });
+    }
+
+    function goPrev() {
+      stopNarration();
+      updateSlide(index - 1, { speak: voiceModeEnabled });
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault();
+        goNext();
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "PageUp") {
+        event.preventDefault();
+        goPrev();
+      }
+
+      if (event.key === "Home") {
+        stopNarration();
+        updateSlide(0, { speak: voiceModeEnabled });
+      }
+
+      if (event.key === "End") {
+        stopNarration();
+        updateSlide(slides.length - 1, { speak: voiceModeEnabled });
+      }
+    });
+
+    voiceToggle.addEventListener("click", () => {
+      voiceModeEnabled = !voiceModeEnabled;
+      voiceToggle.classList.toggle("active", voiceModeEnabled);
+      voiceToggle.textContent = voiceModeEnabled ? "Stop voice" : "Voice mode";
+
+      if (voiceModeEnabled) {
+        updateSlide(index, { speak: true });
+      } else {
+        stopNarration();
+        setVoiceStatus("Voix française locale");
+      }
+    });
+
+    prevZone.addEventListener("click", (event) => {
+      event.stopPropagation();
+      goPrev();
+    });
+
+    nextZone.addEventListener("click", (event) => {
+      event.stopPropagation();
+      goNext();
+    });
+
+    deck.addEventListener("click", (event) => {
+      if (window.innerWidth <= 980) {
+        return;
+      }
+
+      const clickX = event.clientX;
+      if (clickX < window.innerWidth / 2) {
+        goPrev();
+      } else {
+        goNext();
+      }
+    });
+
+    updateSlide(0);
+  </script>
+</body>
+</html>
