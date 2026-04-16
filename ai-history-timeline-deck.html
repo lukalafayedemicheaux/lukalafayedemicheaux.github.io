@@ -565,7 +565,7 @@
 
     <section class="slide">
       <div class="visual-panel contain">
-        <img src="assets/images/image(26).png" alt="Illustration d'un humain et d'un robot en conversation">
+        <img src="assets/images/what is ai slide.png" alt="Illustration d'un humain et d'un robot en conversation">
       </div>
       <div class="text-panel">
         <p class="eyebrow">Avant l'histoire</p>
@@ -580,7 +580,7 @@
 
     <section class="slide">
       <div class="visual-panel dark contain">
-        <img src="assets/images/image(15).png" alt="Exemples de chiffres manuscrits">
+        <img src="assets/images/from rules to learning.jpg" alt="Exemples de chiffres manuscrits">
       </div>
       <div class="text-panel">
         <p class="eyebrow">Avant l'histoire</p>
@@ -595,7 +595,7 @@
 
     <section class="slide">
       <div class="visual-panel dark contain">
-        <img src="assets/images/image(10).png" alt="Schéma simple d'un réseau neuronal">
+        <img src="assets/images/neural network.jpg" alt="Schéma simple d'un réseau neuronal">
       </div>
       <div class="text-panel">
         <p class="eyebrow">Avant l'histoire</p>
@@ -850,7 +850,7 @@
 
     <section class="slide">
       <div class="visual-panel contain">
-        <img src="assets/images/image(26).png" alt="Illustration d'assistant vocal">
+        <img src="assets/images/siri.png" alt="Illustration d'assistant vocal">
       </div>
       <div class="text-panel">
         <p class="eyebrow">2011</p>
@@ -962,7 +962,7 @@
 
     <section class="slide">
       <div class="visual-panel contain">
-        <img src="assets/images/image(20).png" alt="Exemples de visages générés">
+        <img src="assets/images/diffusion models.png" alt="Exemples de visages générés">
       </div>
       <div class="text-panel">
         <p class="eyebrow">2021-2022</p>
@@ -994,7 +994,7 @@
 
     <section class="slide">
       <div class="visual-panel dark contain">
-        <img src="assets/images/image(27).png" alt="Symbole moderne d'IA">
+        <img src="assets/images/multi modal ai .png" alt="Symbole moderne d'IA">
       </div>
       <div class="text-panel">
         <p class="eyebrow">2024-2026</p>
@@ -1010,7 +1010,7 @@
 
     <section class="slide">
       <div class="visual-panel dark contain">
-        <img src="assets/images/image(28).png" alt="Symbole d'IA avancée">
+        <img src="assets/images/reasoning models.webp" alt="Symbole d'IA avancée">
       </div>
       <div class="text-panel">
         <p class="eyebrow">2024-2026</p>
@@ -1026,7 +1026,7 @@
 
     <section class="slide closing">
       <div class="visual-panel dark contain">
-        <img src="assets/images/image(29).png" alt="Symbole d'agent IA">
+        <img src="assets/images/agentic ai.png" alt="Symbole d'agent IA">
       </div>
       <div class="text-panel">
         <p class="eyebrow">2024-2026</p>
@@ -1046,7 +1046,7 @@
 
   <div class="voice-controls">
     <button class="voice-button" id="voiceToggle" type="button">Voice mode</button>
-    <div class="voice-status" id="voiceStatus">Voix française locale</div>
+    <div class="voice-status" id="voiceStatus">Audio local ou voix du navigateur</div>
   </div>
 
   <audio id="narrationAudio" preload="auto"></audio>
@@ -1075,9 +1075,11 @@
     const voiceToggle = document.getElementById("voiceToggle");
     const voiceStatus = document.getElementById("voiceStatus");
     const narrationAudio = document.getElementById("narrationAudio");
+    const speechSupported = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
     let index = 0;
     let voiceModeEnabled = false;
     let autoplayTimer = null;
+    let activeVoiceMode = "audio";
 
     const timelineItems = slides.map((slide, slideIndex) => {
       const year = slide.querySelector(".eyebrow")?.textContent?.trim() || `${slideIndex + 1}`;
@@ -1105,10 +1107,21 @@
       }
     }
 
+    function stopBrowserSpeech() {
+      if (!speechSupported) {
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+    }
+
     function stopNarration() {
       clearAutoplayTimer();
       narrationAudio.pause();
       narrationAudio.currentTime = 0;
+      narrationAudio.removeAttribute("src");
+      narrationAudio.load();
+      stopBrowserSpeech();
     }
 
     function setVoiceStatus(message) {
@@ -1133,6 +1146,87 @@
       }, delay);
     }
 
+    function getPreferredVoice() {
+      if (!speechSupported) {
+        return null;
+      }
+
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) {
+        return null;
+      }
+
+      return (
+        voices.find((voice) => /^fr/i.test(voice.lang) && /google|amelie|thomas|audrey|daniel|super/i.test(voice.name)) ||
+        voices.find((voice) => /^fr/i.test(voice.lang)) ||
+        voices.find((voice) => /^en/i.test(voice.lang)) ||
+        voices[0]
+      );
+    }
+
+    function getSlideNarrationText(slide) {
+      const parts = [];
+      const year = slide.querySelector(".eyebrow")?.textContent?.trim();
+      const title = slide.querySelector("h1, h2")?.textContent?.trim();
+      const subtitle = slide.querySelector(".subtitle")?.textContent?.trim();
+      const bullets = Array.from(slide.querySelectorAll(".bullets li"))
+        .map((item) => item.textContent.trim())
+        .filter(Boolean);
+      const tag = slide.querySelector(".tag")?.textContent?.trim();
+
+      if (year) parts.push(year);
+      if (title) parts.push(title);
+      if (subtitle) parts.push(subtitle);
+      if (tag) parts.push(tag);
+      if (bullets.length) parts.push(bullets.join(". "));
+
+      return parts.join(". ");
+    }
+
+    function speakWithBrowserVoice() {
+      if (!voiceModeEnabled) {
+        return false;
+      }
+
+      if (!speechSupported) {
+        setVoiceStatus("Audio indisponible sur ce navigateur");
+        return false;
+      }
+
+      const activeSlide = slides[index];
+      const text = getSlideNarrationText(activeSlide);
+      if (!text) {
+        setVoiceStatus("Aucun texte a lire");
+        return false;
+      }
+
+      stopBrowserSpeech();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      const preferredVoice = getPreferredVoice();
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+        utterance.lang = preferredVoice.lang;
+      } else {
+        utterance.lang = "fr-FR";
+      }
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.onend = () => {
+        if (voiceModeEnabled) {
+          scheduleNextSlide();
+        }
+      };
+      utterance.onerror = () => {
+        setVoiceStatus("Voix du navigateur indisponible");
+      };
+
+      activeVoiceMode = "browser";
+      setVoiceStatus("Voix du navigateur");
+      window.speechSynthesis.speak(utterance);
+      return true;
+    }
+
     function speakCurrentSlide() {
       if (!voiceModeEnabled) {
         return;
@@ -1143,20 +1237,26 @@
       const audioFile = `assets/audio/tts/slide-${String(index + 1).padStart(2, "0")}.wav`;
       narrationAudio.src = audioFile;
       narrationAudio.onended = () => {
+        activeVoiceMode = "audio";
         if (voiceModeEnabled) {
           scheduleNextSlide();
         }
       };
       narrationAudio.onerror = () => {
-        setVoiceStatus("Audio local introuvable");
+        if (!speakWithBrowserVoice()) {
+          setVoiceStatus("Audio local introuvable");
+        }
       };
 
       const playPromise = narrationAudio.play();
-      setVoiceStatus("Voix française Piper");
+      activeVoiceMode = "audio";
+      setVoiceStatus("Voix francaise locale");
 
       if (playPromise && typeof playPromise.catch === "function") {
         playPromise.catch(() => {
-          setVoiceStatus("Lecture audio bloquée");
+          if (!speakWithBrowserVoice()) {
+            setVoiceStatus("Lecture audio bloquee");
+          }
         });
       }
     }
@@ -1225,7 +1325,8 @@
         updateSlide(index, { speak: true });
       } else {
         stopNarration();
-        setVoiceStatus("Voix française locale");
+        activeVoiceMode = "audio";
+        setVoiceStatus("Audio local ou voix du navigateur");
       }
     });
 
