@@ -5,5 +5,4 @@ node_modules/
 .piper-venv/
 
 # Generated / downloaded voice assets
-assets/audio/tts/
 models/piper/
