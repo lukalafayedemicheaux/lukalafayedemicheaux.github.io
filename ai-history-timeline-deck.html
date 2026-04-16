@@ -418,6 +418,7 @@
       margin: 0;
       appearance: none;
       cursor: pointer;
+      pointer-events: none;
     }
 
     .tap-zone.left {
@@ -538,6 +539,271 @@
       min-width: 14rem;
       text-align: center;
     }
+
+    .split-visual,
+    .attention-demo,
+    .metr-visual {
+      width: 100%;
+      height: 100%;
+    }
+
+    .split-visual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      padding: 1rem;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 235, 219, 0.9));
+    }
+
+    .logic-card,
+    .attention-card,
+    .metr-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      padding: 1.05rem 1.1rem;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 12px 30px rgba(18, 18, 18, 0.08);
+      border: 1px solid rgba(22, 22, 22, 0.08);
+    }
+
+    .logic-card h3,
+    .attention-card h3,
+    .metr-card h3 {
+      margin: 0;
+      font-family: var(--title-font);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 1.08rem;
+      line-height: 1.02;
+    }
+
+    .logic-badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 0.32rem 0.62rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .logic-badge.rules {
+      color: #8b452c;
+      background: rgba(201, 95, 59, 0.12);
+    }
+
+    .logic-badge.ai {
+      color: #2347aa;
+      background: rgba(31, 94, 255, 0.12);
+    }
+
+    .formula {
+      margin: 0;
+      padding: 0.85rem 0.95rem;
+      border-radius: 18px;
+      background: #171717;
+      color: #f7f2eb;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .logic-note,
+    .attention-instruction,
+    .metr-note {
+      margin: 0;
+      font-size: 0.94rem;
+      line-height: 1.33;
+      color: var(--muted);
+    }
+
+    .mini-list {
+      margin: 0;
+      padding-left: 1rem;
+      display: grid;
+      gap: 0.42rem;
+      font-size: 0.95rem;
+      line-height: 1.26;
+    }
+
+    .attention-demo,
+    .metr-visual {
+      display: grid;
+      gap: 0.9rem;
+      padding: 1rem;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 235, 219, 0.9));
+    }
+
+    .attention-sentence {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.25rem;
+    }
+
+    .attention-word {
+      border: 0;
+      padding: 0.55rem 0.72rem;
+      border-radius: 999px;
+      background: rgba(31, 94, 255, 0.08);
+      color: #2347aa;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+    }
+
+    .attention-word:hover {
+      transform: translateY(-1px);
+      background: rgba(31, 94, 255, 0.15);
+    }
+
+    .attention-word.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #ffffff;
+    }
+
+    .attention-links {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .attention-link {
+      display: grid;
+      grid-template-columns: minmax(76px, 112px) 1fr auto;
+      gap: 0.65rem;
+      align-items: center;
+      font-size: 0.92rem;
+    }
+
+    .attention-bar {
+      position: relative;
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(22, 22, 22, 0.1);
+    }
+
+    .attention-bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      transition: width 220ms ease;
+    }
+
+    .attention-score {
+      min-width: 2.7rem;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+    }
+
+    .attention-summary {
+      padding: 0.8rem 0.9rem;
+      border-radius: 18px;
+      background: rgba(31, 94, 255, 0.08);
+      color: #1b2c5b;
+      font-size: 0.96rem;
+      line-height: 1.32;
+    }
+
+    .metr-chart {
+      position: relative;
+      height: 280px;
+      margin-top: 0.1rem;
+      padding: 0.75rem 0.8rem 2.2rem 2.5rem;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(249, 245, 238, 0.98), rgba(240, 233, 223, 0.96));
+      overflow: hidden;
+    }
+
+    .metr-grid {
+      position: absolute;
+      inset: 0.75rem 0.8rem 2.2rem 2.5rem;
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+      pointer-events: none;
+    }
+
+    .metr-grid div {
+      border-top: 1px dashed rgba(22, 22, 22, 0.12);
+    }
+
+    .metr-bars {
+      position: absolute;
+      inset: 0.75rem 0.8rem 2.2rem 2.5rem;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .metr-bar-group {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: end;
+      gap: 0.5rem;
+      height: 100%;
+    }
+
+    .metr-bar {
+      width: 100%;
+      max-width: 54px;
+      border-radius: 18px 18px 8px 8px;
+      background: linear-gradient(180deg, rgba(31, 94, 255, 0.92), rgba(201, 95, 59, 0.92));
+      box-shadow: 0 10px 24px rgba(31, 94, 255, 0.16);
+    }
+
+    .metr-label {
+      text-align: center;
+      font-size: 0.8rem;
+      line-height: 1.18;
+      color: var(--muted);
+    }
+
+    .metr-axis-y {
+      position: absolute;
+      left: 0.55rem;
+      top: 0.6rem;
+      bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .metr-axis-x {
+      position: absolute;
+      left: 2.5rem;
+      right: 0.8rem;
+      bottom: 0.4rem;
+      text-align: center;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .split-visual {
+        grid-template-columns: 1fr;
+      }
+
+      .attention-link {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -579,16 +845,37 @@
     </section>
 
     <section class="slide">
-      <div class="visual-panel dark contain">
-        <img src="assets/images/from rules to learning.jpg" alt="Exemples de chiffres manuscrits">
+      <div class="visual-panel">
+        <div class="split-visual">
+          <div class="logic-card">
+            <span class="logic-badge rules">Programme classique</span>
+            <h3>Règle fixe</h3>
+            <p class="formula">f(x) = ax + b<br>même entrée = même sortie</p>
+            <p class="logic-note">La machine applique une recette écrite à l'avance.</p>
+            <ul class="mini-list">
+              <li>règle explicite</li>
+              <li>résultat reproductible</li>
+            </ul>
+          </div>
+          <div class="logic-card">
+            <span class="logic-badge ai">Outil IA actuel</span>
+            <h3>Réponse probable</h3>
+            <p class="formula">"chat" = 0,82<br>"chien" = 0,14</p>
+            <p class="logic-note">Le modèle choisit la sortie la plus probable à partir de ce qu'il a appris.</p>
+            <ul class="mini-list">
+              <li>sortie probabiliste</li>
+              <li>appris sur des données</li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="text-panel">
         <p class="eyebrow">Avant l'histoire</p>
-        <h2>Règles ou apprentissage</h2>
+        <h2>Règle fixe vs probabilité</h2>
         <ul class="bullets">
-          <li>Un programme classique suit des règles écrites à l'avance.</li>
-          <li>Le machine learning apprend à partir d'exemples et ajuste son comportement.</li>
-          <li>C'est ce passage de la règle à l'exemple qui change l'histoire de l'IA.</li>
+          <li>Un programme classique suit une règle écrite à l'avance.</li>
+          <li>Les outils IA d'aujourd'hui répondent souvent en choisissant la sortie la plus probable.</li>
+          <li>On ne voit plus une règle simple, on voit un comportement appris.</li>
         </ul>
       </div>
     </section>
@@ -760,9 +1047,10 @@
         <p class="eyebrow">1987-1993</p>
         <h2>Deuxième AI winter</h2>
         <ul class="bullets">
-          <li>Les systèmes experts se révèlent rigides et coûteux.</li>
-          <li>Le marché des Lisp machines s'effondre.</li>
-          <li>Nouvelle phase de désillusion.</li>
+          <li>Les systèmes experts se révèlent rigides, coûteux et difficiles à maintenir hors de leur petit domaine.</li>
+          <li>Les Lisp machines étaient des ordinateurs spécialisés, très chers, conçus pour faire tourner Lisp et l'IA symbolique plus vite.</li>
+          <li>Quand des machines généralistes deviennent assez puissantes pour faire presque pareil à moindre coût, l'avantage économique disparaît.</li>
+          <li>Le choc n'est donc pas tombé du ciel: c'est la collision entre promesse commerciale, fragilité technique et réalité du marché.</li>
         </ul>
         <div class="credit"><strong>Edward Feigenbaum</strong><br>The Second AI Winter</div>
       </div>
@@ -824,9 +1112,10 @@
         <p class="eyebrow">2009</p>
         <h2>ImageNet</h2>
         <ul class="bullets">
-          <li>Une énorme base d'images annotées change la recherche.</li>
-          <li>Les données deviennent un moteur central du progrès.</li>
-          <li>Tout le monde peut enfin comparer ses modèles sur le même terrain.</li>
+          <li>ImageNet change l'échelle: environ 14 millions d'images annotées, plus de 20 000 catégories, et 1,2 million d'images pour le challenge phare.</li>
+          <li>Le big data devient concret: la quantité est enfin là, visible, partagée, comparable.</li>
+          <li>Mais au début, il manque encore les moyens de tout exploiter: pas assez de calcul, pas assez de GPU, pas encore les bonnes recettes d'entraînement.</li>
+          <li>Autrement dit, la base existe avant la capacité de la digérer complètement.</li>
         </ul>
         <div class="credit"><strong>Fei-Fei Li</strong><br>ImageNet</div>
       </div>
@@ -872,9 +1161,9 @@
         <p class="eyebrow">2012</p>
         <h2>AlexNet</h2>
         <ul class="bullets">
-          <li>Le deep learning écrase la concurrence sur ImageNet.</li>
-          <li>Le point de bascule devient visible pour toute la communauté.</li>
-          <li>Les CNN, les GPU et les données changent l'échelle du possible.</li>
+          <li>Le deep learning écrase la concurrence sur ImageNet: cette fois, il y a à la fois la montagne de données et les moyens de la traiter.</li>
+          <li>Le point de bascule devient visible: CNN, GPU et grande base enfin alignés dans le même moment.</li>
+          <li>La leçon est importante pour la salle: l'idée existait avant, mais elle attendait le bon volume de données et la bonne puissance de calcul.</li>
         </ul>
         <div class="credit"><strong>Alex Krizhevsky</strong><br>AlexNet</div>
       </div>
@@ -913,16 +1202,66 @@
     </section>
 
     <section class="slide">
-      <div class="visual-panel contain">
-        <img src="assets/images/image(22).png" alt="Schéma d'un transformer">
+      <div class="visual-panel">
+        <div class="attention-demo">
+          <div class="attention-card">
+            <h3>Exemple interactif d'attention</h3>
+            <p class="attention-instruction">Clique sur un mot. La phrase montre quels autres mots deviennent importants pour l'interpréter.</p>
+            <div class="attention-sentence" data-attention-demo>
+              <button class="attention-word active" type="button" data-word="chat">chat</button>
+              <button class="attention-word" type="button" data-word="regarde">regarde</button>
+              <button class="attention-word" type="button" data-word="souris">souris</button>
+              <button class="attention-word" type="button" data-word="parce">parce</button>
+              <button class="attention-word" type="button" data-word="elle">elle</button>
+              <button class="attention-word" type="button" data-word="bouge">bouge</button>
+            </div>
+          </div>
+          <div class="attention-card">
+            <h3>Poids d'attention</h3>
+            <div class="attention-links" id="attentionLinks">
+              <div class="attention-link">
+                <strong>chat</strong>
+                <div class="attention-bar"><span></span></div>
+                <span class="attention-score">0.00</span>
+              </div>
+              <div class="attention-link">
+                <strong>regarde</strong>
+                <div class="attention-bar"><span></span></div>
+                <span class="attention-score">0.00</span>
+              </div>
+              <div class="attention-link">
+                <strong>souris</strong>
+                <div class="attention-bar"><span></span></div>
+                <span class="attention-score">0.00</span>
+              </div>
+              <div class="attention-link">
+                <strong>parce</strong>
+                <div class="attention-bar"><span></span></div>
+                <span class="attention-score">0.00</span>
+              </div>
+              <div class="attention-link">
+                <strong>elle</strong>
+                <div class="attention-bar"><span></span></div>
+                <span class="attention-score">0.00</span>
+              </div>
+              <div class="attention-link">
+                <strong>bouge</strong>
+                <div class="attention-bar"><span></span></div>
+                <span class="attention-score">0.00</span>
+              </div>
+            </div>
+            <div class="attention-summary" id="attentionSummary">Quand on lit « chat », le modèle regarde surtout le verbe et l'objet pour comprendre qui fait l'action.</div>
+          </div>
+        </div>
       </div>
       <div class="text-panel">
         <p class="eyebrow">2017</p>
         <h2>Transformers</h2>
         <ul class="bullets">
-          <li>Nouvelle architecture pour traiter le langage à grande échelle.</li>
-          <li>L'attention relie mieux les éléments d'une phrase.</li>
-          <li>Base technique des grands modèles modernes.</li>
+          <li>Avant, beaucoup de modèles lisaient presque mot par mot. Ici, le modèle peut regarder directement ailleurs dans la phrase.</li>
+          <li>L'attention répond à une idée simple: pour comprendre un mot, quels autres mots faut-il regarder tout de suite ?</li>
+          <li>C'est ce mécanisme qui rend possible la lecture de très gros textes et, plus tard, les grands modèles de langage.</li>
+          <li>En version très simple: un Transformer apprend quoi relier à quoi au bon moment.</li>
         </ul>
         <div class="credit"><strong>Ashish Vaswani</strong><br>Transformers</div>
       </div>
@@ -946,7 +1285,7 @@
 
     <section class="slide">
       <div class="visual-panel dark contain">
-        <img src="assets/images/image(25).png" alt="Symbole de modèle de langage">
+        <img src="assets/images/GPT3_image.webp" alt="Illustration GPT-3">
       </div>
       <div class="text-panel">
         <p class="eyebrow">2020</p>
@@ -989,6 +1328,22 @@
           <li>C'est une étape clé vers l'expérience ChatGPT.</li>
         </ul>
         <div class="credit"><strong>Long Ouyang</strong><br>RLHF / InstructGPT</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="visual-panel contain">
+        <img src="assets/images/metr.png" alt="Graphique METR">
+      </div>
+      <div class="text-panel">
+        <p class="eyebrow">2024-2026</p>
+        <h2>Évaluer les modèles</h2>
+        <ul class="bullets">
+          <li>METR mesure les modèles sur des tâches plus réelles, pas juste sur des quiz.</li>
+          <li>L'idée clé: jusqu'où un modèle reste-t-il fiable quand la tâche devient longue et complexe ?</li>
+          <li>On évalue donc moins une réponse isolée que la capacité à tenir un vrai travail.</li>
+        </ul>
+        <div class="credit"><strong>METR</strong><br>Model Evaluation</div>
       </div>
     </section>
 
@@ -1076,6 +1431,32 @@
     const voiceStatus = document.getElementById("voiceStatus");
     const narrationAudio = document.getElementById("narrationAudio");
     const speechSupported = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+    const attentionPatterns = {
+      chat: {
+        scores: [0.96, 0.72, 0.58, 0.14, 0.22, 0.09],
+        summary: "Quand on lit « chat », le modèle regarde surtout le verbe « regarde » et l'objet « souris » pour comprendre qui fait l'action."
+      },
+      regarde: {
+        scores: [0.82, 0.94, 0.74, 0.18, 0.16, 0.21],
+        summary: "Pour « regarde », le modèle relie fortement le sujet « chat » et l'objet « souris » : qui regarde quoi ?"
+      },
+      souris: {
+        scores: [0.43, 0.72, 0.97, 0.18, 0.34, 0.27],
+        summary: "Pour « souris », le modèle vérifie surtout le verbe et le sujet, afin de distinguer l'animal de l'action."
+      },
+      parce: {
+        scores: [0.16, 0.22, 0.14, 0.98, 0.68, 0.76],
+        summary: "Le mot « parce » annonce une explication : l'attention se déplace vers la deuxième partie de la phrase."
+      },
+      elle: {
+        scores: [0.58, 0.32, 0.64, 0.46, 0.95, 0.52],
+        summary: "Pour « elle », l'attention sert à retrouver le bon référent dans la phrase, ici probablement « souris »."
+      },
+      bouge: {
+        scores: [0.21, 0.34, 0.56, 0.52, 0.72, 0.99],
+        summary: "Pour « bouge », le modèle se connecte à « elle » et à la proposition causale complète pour comprendre pourquoi l'action compte."
+      }
+    };
     let index = 0;
     let voiceModeEnabled = false;
     let autoplayTimer = null;
@@ -1284,6 +1665,53 @@
       }
     }
 
+    function updateAttentionDemo(wordKey) {
+      const pattern = attentionPatterns[wordKey];
+      if (!pattern) {
+        return;
+      }
+
+      document.querySelectorAll("[data-word]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.word === wordKey);
+      });
+
+      const rows = Array.from(document.querySelectorAll("#attentionLinks .attention-link"));
+      rows.forEach((row, rowIndex) => {
+        const fill = row.querySelector(".attention-bar span");
+        const score = row.querySelector(".attention-score");
+        const value = pattern.scores[rowIndex] || 0;
+        fill.style.width = `${Math.round(value * 100)}%`;
+        score.textContent = value.toFixed(2);
+      });
+
+      const summary = document.getElementById("attentionSummary");
+      if (summary) {
+        summary.textContent = pattern.summary;
+      }
+    }
+
+    function initAttentionDemo() {
+      document.querySelectorAll(".attention-demo, .attention-card, .attention-links, .attention-link").forEach((element) => {
+        element.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+      });
+
+      const wordButtons = Array.from(document.querySelectorAll("[data-word]"));
+      if (!wordButtons.length) {
+        return;
+      }
+
+      wordButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          updateAttentionDemo(button.dataset.word);
+        });
+      });
+
+      updateAttentionDemo("chat");
+    }
+
     function goNext() {
       stopNarration();
       updateSlide(index + 1, { speak: voiceModeEnabled });
@@ -1345,6 +1773,14 @@
         return;
       }
 
+      if (
+        event.target.closest(
+          ".attention-demo, .attention-card, .attention-links, .attention-link, .attention-word, .timeline, .voice-controls"
+        )
+      ) {
+        return;
+      }
+
       const clickX = event.clientX;
       if (clickX < window.innerWidth / 2) {
         goPrev();
@@ -1353,6 +1789,7 @@
       }
     });
 
+    initAttentionDemo();
     updateSlide(0);
   </script>
 </body>
